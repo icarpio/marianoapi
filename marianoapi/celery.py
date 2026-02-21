@@ -4,9 +4,9 @@ from celery import Celery
 from celery.schedules import crontab
 
 # Establece el módulo de configuración para Celery
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'virtual_pet.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'marianoapi.settings')
 
-app = Celery('virtual_pet')
+app = Celery('marianoapi')
 
 # Configuración de Celery para usar los ajustes de Django
 app.config_from_object('django.conf:settings', namespace='CELERY')
