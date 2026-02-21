@@ -10,12 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 SECRET_KEY = os.getenv('SECRET_KEY')
 REDIS_URL = os.environ.get('REDIS_URL')
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1').split(',')
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
 
 CORS_ALLOW_CREDENTIALS = False
-ALLOWED_HOSTS = ['*']
+#ALLOWED_HOSTS = ['*']
 
 """
 CORS_ALLOWED_ORIGINS = [
