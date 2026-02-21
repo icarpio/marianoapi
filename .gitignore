@@ -1,0 +1,14 @@
+# Ignorar archivos de entorno
+.env
+
+# Configuración de entorno de Virtualenv y Pipenv
+env/
+venv/
+
+
+# Archivos y carpetas estáticos generados
+staticfiles/
+
+README.md
+"db.sqlite3" 
+"db.sqlite3" 
