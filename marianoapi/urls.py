@@ -7,4 +7,5 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),
     path('api/', include('appointments.urls')),
     path('game/', include('game.urls')),
+    path('api/aquarium/', include('aquarium.urls')),
 ]

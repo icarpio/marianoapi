@@ -224,3 +224,84 @@ def change_password(request):
         'message': 'Contraseña actualizada exitosamente',
         'token':   token.key
     })
+    
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def reset_password(request):
+    """
+    Reseteo de contraseña en dos pasos.
+
+    Paso 1 — Verificar identidad (step: "verify"):
+      Body: { "username": "...", "email": "...", "source": "aquarium", "step": "verify" }
+      Respuesta OK: { "verified": true, "message": "..." }
+
+    Paso 2 — Establecer nueva contraseña (step: "reset"):
+      Body: { "username": "...", "email": "...", "source": "aquarium",
+               "step": "reset", "new_password": "...", "new_password2": "..." }
+      Respuesta OK: { "message": "Contraseña actualizada" }
+    """
+    username     = request.data.get('username', '').strip()
+    email        = request.data.get('email', '').strip()
+    source       = request.data.get('source', '')
+    step         = request.data.get('step', 'verify')
+    new_password = request.data.get('new_password', '')
+    new_password2= request.data.get('new_password2', '')
+
+    if not username or not email:
+        return Response(
+            {'error': 'Usuario y email son obligatorios'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Buscar usuario por username + source (misma lógica que login)
+    try:
+        user = CustomUser.objects.get(username=username, source=source)
+    except CustomUser.DoesNotExist:
+        # Mensaje genérico para no revelar si el usuario existe
+        return Response(
+            {'error': 'No encontramos una cuenta con esos datos'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # Verificar que el email coincide (case-insensitive)
+    if user.email.lower() != email.lower():
+        return Response(
+            {'error': 'No encontramos una cuenta con esos datos'},
+            status=status.HTTP_404_NOT_FOUND
+        )
+
+    # ── PASO 1: solo verificar identidad ──────────────────────────────────────
+    if step == 'verify':
+        return Response({
+            'verified': True,
+            'message':  'Identidad verificada. Ahora puedes establecer tu nueva contraseña.',
+        })
+
+    # ── PASO 2: cambiar contraseña ────────────────────────────────────────────
+    if step == 'reset':
+        if not new_password:
+            return Response(
+                {'error': 'La nueva contraseña es obligatoria'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if len(new_password) < 8:
+            return Response(
+                {'error': 'La contraseña debe tener al menos 8 caracteres'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        if new_password != new_password2:
+            return Response(
+                {'error': 'Las contraseñas no coinciden'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        user.set_password(new_password)
+        user.save()
+
+        # Invalidar todos los tokens existentes para forzar nuevo login
+        Token.objects.filter(user=user).delete()
+
+        return Response({'message': 'Contraseña actualizada correctamente'})
+
+    return Response({'error': 'Paso no válido'}, status=status.HTTP_400_BAD_REQUEST)
+

@@ -2,6 +2,8 @@
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+import cloudinary
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -14,15 +16,24 @@ DEBUG = False
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1').split(',')
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', '').split(',')
 
-CORS_ALLOW_CREDENTIALS = False
-#ALLOWED_HOSTS = ['*']
-
 """
+CORS_ALLOW_CREDENTIALS = False
+ALLOWED_HOSTS = ['*']
+
+
 CORS_ALLOWED_ORIGINS = [
     "https://marianoapi.onrender.com",
     "http://localhost:3000"
-]   
+]  
 """
+
+cloudinary.config(
+    cloud_name = os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key    = os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret = os.environ.get('CLOUDINARY_API_SECRET'),
+    secure     = True,
+)
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,6 +50,7 @@ INSTALLED_APPS = [
     'pets',
     'appointments',
     'game',
+    'aquarium'
     
 ]
 

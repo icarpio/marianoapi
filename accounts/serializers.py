@@ -25,7 +25,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         required=False,
         write_only=True,
         default=dict,
-        help_text='Datos extra específicos de cada app. Ej: {"ciudad_id": 1}'
+        help_text='Datos extra específicos de cada app.'
     )
 
     class Meta:

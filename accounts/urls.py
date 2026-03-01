@@ -7,5 +7,6 @@ urlpatterns = [
     path('api/auth/logout/', views.logout_view, name='logout'),
     path('api/auth/user/', views.current_user, name='current_user'),
     path('api/auth/update-profile/', views.update_profile, name='update_profile'),
-    path('api/auth/change-password/', views.change_password, name='change_password'),
+    path('api/auth/change-password/', views.change_password, name='change_password'), # Con login OK
+    path('api/auth/reset-password/', views.reset_password, name='reset-password') #Sin login
 ]
